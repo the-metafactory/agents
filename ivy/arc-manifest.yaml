@@ -19,25 +19,25 @@ name: agent-ivy
 version: 0.1.0
 tier: custom
 
-description: "TODO(JC): one-line elevator pitch for Ivy. Today the operating model is 'peer-pilot on JC's side, sibling to Luna' — refine to JC's framing."
+description: "Ivy: The coordination agent of Jens-Christian (JC) that works with Holly and other agents"
 
 author:
-  name: "TODO(JC): your name"
-  github: "TODO(JC): your github login"
+  name: "Jens-Christian"
+  github: "jcfischer"
 
 # ─── Identity (per-host surface) ──────────────────────────────────────────
 identity:
   displayName: Ivy
   shortName: ivy
-  oneLine: "TODO(JC): one-line for /help"
+  oneLine: "Coordination Agent"
   channels:
     discord:
       # Ivy's Discord application user ID — known from Andreas's
       # bot.yaml `trustedAgentBots` row. Verify it's still the right ID
       # for JC's host (it should be — same Ivy bot, same identity).
       botId: "1487024060411023491"
-      preferredChannels: [] # TODO(JC): list channels Ivy should bias towards
-      dmEnabled: false # TODO(JC): true if Ivy talks 1:1, false otherwise
+      preferredChannels: ['#meta-factory'] # list channels Ivy should bias towards
+      dmEnabled: true # true if Ivy talks 1:1, false otherwise
 
 # ─── Persona ─────────────────────────────────────────────────────────────
 persona:
@@ -47,31 +47,51 @@ persona:
 # When Ivy is mentioned by another bot (e.g. Pilot), this names the role
 # whose guardrails apply on the receiving Discord adapter. The role MUST
 # exist in `roles[]` of every Discord-instance JC's grove-bot serves.
-mentionRole: agent-restricted # TODO(JC): tighter custom role if needed
+mentionRole: agent-restricted # tighter custom role if needed
 
 # ─── Blueprints (arc bundles to compose) ─────────────────────────────────
-blueprints: [] # TODO(JC): list bundles Ivy leans on (none required for chat-only)
+blueprints: [] # list bundles Ivy leans on (none required for chat-only)
 
 # ─── Guardrails (declarative authority) ──────────────────────────────────
 # Defaults pre-filled for a coordinator-class agent on JC's host. Tighten
 # or widen based on what Ivy actually does day-to-day.
 guardrails:
   allowedDirs:
-    - "TODO(JC): JC's primary repo paths, e.g. ~/Developer/<jc-project>"
+    - "~/work/mf"
   readOnlyDirs:
-    - "~/Developer/compass" # ecosystem SOPs are read-only for everyone
+    - "~/work/mf/compass" # ecosystem SOPs are read-only for everyone
   allowedSkills: [] # TODO(JC): list explicit skills Ivy may invoke; [] denies all
-  disallowedTools: [] # TODO(JC): tighten if Ivy shouldn't Edit/Write/NotebookEdit
+  disallowedTools: [] # tighten if Ivy shouldn't Edit/Write/NotebookEdit
   bashAllowlist:
     rules:
-      - pattern: "^gh\\s+(pr|issue|api|search|label|repo|status)\\b"
-      - pattern: "^git\\s+(status|log|diff|show|fetch)\\b"
+      - pattern: "^gh\\s+"
+      - pattern: "^git\\s+"
+      - pattern: "^bun\\s+"
+      - pattern: "^npm\\s+"
+      - pattern: "^ls\\b"
+      - pattern: "^pwd$"
+      - pattern: "^cat\\b"
+      - pattern: "^head\\b"
+      - pattern: "^tail\\b"
+      - pattern: "^wc\\b"
+      - pattern: "^which\\b"
+      - pattern: "^mkdir\\b"
+      - pattern: "^cp\\b"
+      - pattern: "^mv\\b"
+      - pattern: "^rm\\b"
+      - pattern: "^echo\\b"
+      - pattern: "^curl\\b"
+      - pattern: "^jq\\b"
+      - pattern: "^bunx\\s+"
+      - pattern: "^pilot\\s+"
+      - pattern: "^discord\\s+"
+      - pattern: "^arc\\s+"
 
 # ─── Triggers (when Ivy activates) ───────────────────────────────────────
 triggers:
   - type: mention
     surface: discord
-    channelPattern: "*" # TODO(JC): narrow if Ivy should only respond in specific channels
+    channelPattern: "*" # narrow if Ivy should only respond in specific channels
   - type: cli
     command: ivy
 
@@ -80,14 +100,14 @@ hooks: {}
 
 # ─── Roster (sibling agents Ivy knows about) ─────────────────────────────
 roster:
-  - name: agent-luna
+  - name: luna
     role: coordinator-on-andreas-side
-  - name: agent-echo
-    role: reviewer
-  - name: agent-forge
-    role: release
-  - name: agent-holly
-    role: "TODO(JC): describe Holly's role from Ivy's POV"
+  - name: -echo
+    role: code-reviewer
+  - name: forge
+    role: release-agent
+  - name: holly
+    role: code-reviewer
 
 # ─── Instance state ──────────────────────────────────────────────────────
 instanceStateSpec:
