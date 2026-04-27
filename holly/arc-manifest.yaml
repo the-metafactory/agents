@@ -1,0 +1,94 @@
+# Holly — JC's second agent.
+#
+# **DRAFT scaffold — JC fills the `TODO(JC)` markers before this manifest is
+# installed.** Migrating from JC's hand-configured `bot.yaml` entries to
+# the manifest-driven install pipeline. Recipe: ../CREATING.md (Step 2 onward).
+#
+# Andreas/Luna don't know Holly's specific role + scope — that's JC's
+# call to capture in `description`, `identity.oneLine`, and `persona.md`.
+# Pre-filled where the canonical shape forces a choice; everything else
+# is `TODO(JC)`.
+
+schema: pai/v1
+namespace: metafactory
+type: agent
+name: agent-holly
+version: 0.1.0
+tier: custom
+
+description: "TODO(JC): one-line elevator pitch for Holly. What does Holly do that no other agent does?"
+
+author:
+  name: "TODO(JC): your name"
+  github: "TODO(JC): your github login"
+
+# ─── Identity (per-host surface) ──────────────────────────────────────────
+identity:
+  displayName: Holly
+  shortName: holly
+  oneLine: "TODO(JC): one-line for /help"
+  channels:
+    discord:
+      botId: "TODO(JC): Holly's Discord application user ID"
+      preferredChannels: [] # TODO(JC): list channels Holly biases towards
+      dmEnabled: false # TODO(JC): true if Holly talks 1:1, false otherwise
+
+# ─── Persona ─────────────────────────────────────────────────────────────
+persona:
+  file: persona.md
+
+# ─── Cross-adapter authority ─────────────────────────────────────────────
+# Pick one. `agent-restricted` (read-only chat across other adapters) or
+# define a tighter custom role under your host's `discord[].roles[]` and
+# name it here. The role MUST exist in `roles[]` of every Discord-instance
+# JC's grove-bot serves.
+mentionRole: agent-restricted
+
+# ─── Blueprints (arc bundles to compose) ─────────────────────────────────
+blueprints: [] # TODO(JC): list bundles Holly leans on (none required for chat-only)
+
+# ─── Guardrails (declarative authority) ──────────────────────────────────
+# TODO(JC): default-deny shape. Tighten/widen based on what Holly does.
+# If Holly is reviewer-class (mostly read), copy from `../echo/arc-manifest.yaml`.
+# If Holly is coordinator-class (drives work), copy from `../luna/arc-manifest.yaml`.
+guardrails:
+  allowedDirs:
+    - "TODO(JC): JC's primary repo paths, e.g. ~/Developer/<jc-project>"
+  readOnlyDirs:
+    - "~/Developer/compass"
+  allowedSkills: []
+  disallowedTools: []
+  bashAllowlist:
+    rules:
+      - pattern: "^gh\\s+(pr|issue|api|search|label|repo|status)\\b"
+      - pattern: "^git\\s+(status|log|diff|show|fetch)\\b"
+
+# ─── Triggers (when Holly activates) ─────────────────────────────────────
+triggers:
+  - type: mention
+    surface: discord
+    channelPattern: "*" # TODO(JC): narrow if Holly should only respond in specific channels
+  - type: cli
+    command: holly
+
+# ─── Hooks (lifecycle) — Phase 10 work; leave empty for now ──────────────
+hooks: {}
+
+# ─── Roster (sibling agents Holly knows about) ───────────────────────────
+roster:
+  - name: agent-luna
+    role: coordinator-on-andreas-side
+  - name: agent-echo
+    role: reviewer
+  - name: agent-forge
+    role: release
+  - name: agent-ivy
+    role: "TODO(JC): describe Ivy's role from Holly's POV"
+
+# ─── Instance state ──────────────────────────────────────────────────────
+instanceStateSpec:
+  blueprint: AgentState
+  version: ">=0.2.0"
+
+instantiation:
+  scope: per-host

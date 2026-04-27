@@ -1,0 +1,98 @@
+# Ivy — JC's coordinator agent (peer-pilot on JC's side, sibling to Luna).
+#
+# **DRAFT scaffold — JC fills the `TODO(JC)` markers before this manifest is
+# installed.** Migrating from JC's hand-configured `bot.yaml` entries to
+# the manifest-driven install pipeline. Recipe: ../CREATING.md (Step 2 onward).
+#
+# Per the design (forge/design/agent-platform.md §"Field-by-field reference"),
+# this manifest captures Ivy's identity, persona, guardrails, triggers,
+# hooks, roster, and instance state spec — the canonical source from which
+# JC's grove host derives bot.yaml entries on `grove install agent ivy`.
+#
+# Pre-filled where Andreas/Luna can be confident from existing context;
+# everything else is `TODO(JC)`.
+
+schema: pai/v1
+namespace: metafactory
+type: agent
+name: agent-ivy
+version: 0.1.0
+tier: custom
+
+description: "TODO(JC): one-line elevator pitch for Ivy. Today the operating model is 'peer-pilot on JC's side, sibling to Luna' — refine to JC's framing."
+
+author:
+  name: "TODO(JC): your name"
+  github: "TODO(JC): your github login"
+
+# ─── Identity (per-host surface) ──────────────────────────────────────────
+identity:
+  displayName: Ivy
+  shortName: ivy
+  oneLine: "TODO(JC): one-line for /help"
+  channels:
+    discord:
+      # Ivy's Discord application user ID — known from Andreas's
+      # bot.yaml `trustedAgentBots` row. Verify it's still the right ID
+      # for JC's host (it should be — same Ivy bot, same identity).
+      botId: "1487024060411023491"
+      preferredChannels: [] # TODO(JC): list channels Ivy should bias towards
+      dmEnabled: false # TODO(JC): true if Ivy talks 1:1, false otherwise
+
+# ─── Persona ─────────────────────────────────────────────────────────────
+persona:
+  file: persona.md
+
+# ─── Cross-adapter authority ─────────────────────────────────────────────
+# When Ivy is mentioned by another bot (e.g. Pilot), this names the role
+# whose guardrails apply on the receiving Discord adapter. The role MUST
+# exist in `roles[]` of every Discord-instance JC's grove-bot serves.
+mentionRole: agent-restricted # TODO(JC): tighter custom role if needed
+
+# ─── Blueprints (arc bundles to compose) ─────────────────────────────────
+blueprints: [] # TODO(JC): list bundles Ivy leans on (none required for chat-only)
+
+# ─── Guardrails (declarative authority) ──────────────────────────────────
+# Defaults pre-filled for a coordinator-class agent on JC's host. Tighten
+# or widen based on what Ivy actually does day-to-day.
+guardrails:
+  allowedDirs:
+    - "TODO(JC): JC's primary repo paths, e.g. ~/Developer/<jc-project>"
+  readOnlyDirs:
+    - "~/Developer/compass" # ecosystem SOPs are read-only for everyone
+  allowedSkills: [] # TODO(JC): list explicit skills Ivy may invoke; [] denies all
+  disallowedTools: [] # TODO(JC): tighten if Ivy shouldn't Edit/Write/NotebookEdit
+  bashAllowlist:
+    rules:
+      - pattern: "^gh\\s+(pr|issue|api|search|label|repo|status)\\b"
+      - pattern: "^git\\s+(status|log|diff|show|fetch)\\b"
+
+# ─── Triggers (when Ivy activates) ───────────────────────────────────────
+triggers:
+  - type: mention
+    surface: discord
+    channelPattern: "*" # TODO(JC): narrow if Ivy should only respond in specific channels
+  - type: cli
+    command: ivy
+
+# ─── Hooks (lifecycle) — Phase 10 work; leave empty for now ──────────────
+hooks: {}
+
+# ─── Roster (sibling agents Ivy knows about) ─────────────────────────────
+roster:
+  - name: agent-luna
+    role: coordinator-on-andreas-side
+  - name: agent-echo
+    role: reviewer
+  - name: agent-forge
+    role: release
+  - name: agent-holly
+    role: "TODO(JC): describe Holly's role from Ivy's POV"
+
+# ─── Instance state ──────────────────────────────────────────────────────
+instanceStateSpec:
+  blueprint: AgentState
+  version: ">=0.2.0"
+
+instantiation:
+  scope: per-host
