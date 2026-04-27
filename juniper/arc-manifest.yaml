@@ -1,0 +1,130 @@
+# Juniper — JC's PM-style backlog agent.
+#
+# Reads Discord conversations and distills them into well-shaped GitHub
+# issues. Pairs with Ivy (coordinator) and Holly (reviewer) — same
+# botanical naming pattern. Runs the `distiller` skill (HARVEST →
+# STRUCTURE → DOCUMENT) under the hood, then files issues on JC's
+# repos with the ecosystem-standard label set.
+#
+# Naming note: the agent's persona is "Juniper" (botanical sibling),
+# the SKILL it invokes is "distiller" (the verb / underlying capability,
+# stable per D-200 keyword routing). Don't rename the skill.
+
+schema: pai/v1
+namespace: metafactory
+type: agent
+name: agent-juniper
+version: 0.1.0
+tier: custom
+
+description: "Juniper — JC's project-manager backlog agent. Distills Discord conversations into structured GitHub issues with clear acceptance criteria, ready to be worked on later."
+
+author:
+  name: "Jens-Christian"
+  github: "jcfischer"
+
+# ─── Identity (per-host surface) ──────────────────────────────────────────
+identity:
+  displayName: Juniper
+  shortName: juniper
+  oneLine: "PM backlog agent — distills threads into well-shaped GitHub issues"
+  channels:
+    discord:
+      # Juniper has its own Discord application (see ../CREATING.md Step 1).
+      # Replace this placeholder with the bot's user ID before running
+      # `grove install agent`. Operator can pass the real value via
+      # `--discord-bot-id` if leaving the manifest untouched at install
+      # time is preferable (the installer prefers the descriptor's botId
+      # over the manifest's placeholder when one is present).
+      botId: "REPLACE_WITH_DISCORD_BOT_ID"
+      preferredChannels:
+        - "#meta-factory"
+      dmEnabled: false # PM agent — issues live on GH, not in DMs
+
+# ─── Persona ─────────────────────────────────────────────────────────────
+persona:
+  file: persona.md
+
+# ─── Cross-adapter authority ─────────────────────────────────────────────
+# When Juniper is mentioned by another bot (e.g. Ivy hands a thread off),
+# this names the role whose guardrails apply on the receiving Discord
+# adapter. The role MUST exist in `roles[]` of every Discord-instance
+# JC's grove-bot serves.
+mentionRole: agent-restricted
+
+# ─── Blueprints (arc bundles to compose) ─────────────────────────────────
+# Juniper's primary capability is the `distiller` skill — HARVEST →
+# STRUCTURE → DOCUMENT. The bundle is published from
+# the-metafactory/distiller; pin a permissive lower bound and let arc
+# resolve the latest minor.
+blueprints:
+  - name: distiller
+    version: ">=0.1.0"
+
+# ─── Guardrails (declarative authority) ──────────────────────────────────
+# PM-class shape: read everything in JC's metafactory tree, run the
+# distiller skill, file issues via gh CLI. NO direct code mutation —
+# Juniper proposes, the operator (or Ivy) drives the actual feature work.
+guardrails:
+  allowedDirs:
+    - "~/work/mf"
+  readOnlyDirs:
+    - "~/work/mf/compass" # ecosystem SOPs are read-only for everyone
+  allowedSkills:
+    - distiller # primary skill — D-200 keyword routes here
+  # No code mutation; Juniper files issues, doesn't write code.
+  disallowedTools:
+    - Edit
+    - Write
+    - NotebookEdit
+    - Task # PM agent doesn't spawn sub-agents
+  bashAllowlist:
+    rules:
+      # gh — `gh issue create` is the privileged verb; rest read-only.
+      - pattern: "^gh\\s+(issue|pr|api|search|label|repo|status)\\b"
+      # git — read-only verbs for context-gathering before filing.
+      - pattern: "^git\\s+(log|diff|show|status|branch|fetch|remote|rev-parse|ls-files|cat-file|blame)\\b"
+      # File reads for harvesting transcripts / context.
+      - pattern: "^ls\\b"
+      - pattern: "^pwd$"
+      - pattern: "^cat\\b"
+      - pattern: "^head\\b"
+      - pattern: "^tail\\b"
+      - pattern: "^wc\\b"
+      - pattern: "^which\\b"
+      - pattern: "^grep\\b"
+      - pattern: "^rg\\b"
+      - pattern: "^find\\b"
+
+# ─── Triggers (when Juniper activates) ───────────────────────────────────
+triggers:
+  - type: mention
+    surface: discord
+    channelPattern: "*"
+  - type: cli
+    command: juniper
+    # Examples: `juniper <thread-url>`, `juniper distill <issue-id>`
+
+# ─── Hooks (lifecycle) — Phase 10 work; leave empty for now ──────────────
+hooks: {}
+
+# ─── Roster (sibling agents Juniper knows about) ─────────────────────────
+roster:
+  - name: agent-ivy
+    role: coordinator-on-jc-side
+  - name: agent-holly
+    role: reviewer-on-jc-side
+  - name: agent-luna
+    role: coordinator-on-andreas-side
+  - name: agent-echo
+    role: reviewer-on-andreas-side
+  - name: agent-forge
+    role: release
+
+# ─── Instance state ──────────────────────────────────────────────────────
+instanceStateSpec:
+  blueprint: AgentState
+  version: ">=0.2.0"
+
+instantiation:
+  scope: per-host
