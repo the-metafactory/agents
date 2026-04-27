@@ -1,0 +1,117 @@
+# Echo — code reviewer agent for the metafactory ecosystem.
+#
+# Per the design (forge/design/agent-platform.md §"Field-by-field reference"),
+# this manifest captures Echo's identity, persona, guardrails, triggers,
+# hooks, roster, and instance state spec — the canonical source from which
+# the host (grove) derives bot.yaml entries on `grove install agent echo`.
+#
+# Reverse-engineered from ~/.config/grove/bot.yaml (discord-echo adapter)
+# during Phase 8 migration (forge#6). Operator review encouraged before
+# checkin to a stable repo (e.g. the-metafactory/metafactory-agents).
+
+schema: pai/v1
+namespace: metafactory
+type: agent
+name: echo
+version: 0.1.0
+tier: custom
+
+description: "Echo — Andreas's code review agent. Drives the multi-lens PR review workflow (CodeQuality, Security, Hardening, Architecture, EcosystemCompliance, Performance, Duplication) for the pilot loop."
+
+author:
+  name: Andreas Aastroem
+  github: mellanon
+
+# ─── Identity ─────────────────────────────────────────────────────────────
+identity:
+  displayName: Echo
+  shortName: echo
+  oneLine: Code reviewer — drives the multi-lens PR review workflow for the pilot loop
+  channels:
+    discord:
+      botId: "1497872105067253800"
+      preferredChannels: ["#grove", "#forge", "#test-rig", "#arc"]
+      dmEnabled: true
+
+# ─── Persona ──────────────────────────────────────────────────────────────
+persona:
+  file: persona.md
+
+# ─── Blueprints ───────────────────────────────────────────────────────────
+# Echo composes the arc-skill-code-review bundle (the multi-lens review
+# convention). Other skills come from the broader PAI runtime.
+blueprints:
+  - name: arc-skill-code-review
+    version: ">=0.1.0"
+
+# ─── Guardrails ───────────────────────────────────────────────────────────
+guardrails:
+  allowedDirs:
+    - ~/Developer/grove
+    - ~/Developer/forge
+    - ~/Developer/release-manager
+    - ~/Developer/agent-state
+    - ~/Developer/arc
+    - ~/Developer/meta-factory
+    - ~/Developer/compass
+    - ~/Developer/test-rig
+    - ~/Developer/grove-auth
+    - ~/Developer/blueprint
+    - ~/Developer/grove-v2
+    - ~/Developer/distiller
+    - ~/Developer/metafactory-agents
+  readOnlyDirs:
+    - ~/Developer/compass                   # SOPs are read-only
+  allowedSkills:
+    - code-review                           # Echo's primary skill (per arc-skill-code-review)
+  # Echo's role is review-only — no Edit/Write/NotebookEdit/Task. Echo posts
+  # findings via gh CLI, never directly modifies code.
+  disallowedTools:
+    - Edit
+    - Write
+    - NotebookEdit
+    - Task
+  bashAllowlist:
+    rules:
+      - pattern: "^gh\\s+"
+      - pattern: "^git\\s+(log|diff|show|status|branch|fetch|remote|rev-parse|ls-files|cat-file|blame)\\b"
+      - pattern: "^ls\\b"
+      - pattern: "^pwd$"
+      - pattern: "^cat\\b"
+      - pattern: "^head\\b"
+      - pattern: "^tail\\b"
+      - pattern: "^wc\\b"
+      - pattern: "^which\\b"
+      - pattern: "^grep\\b"
+      - pattern: "^rg\\b"
+      - pattern: "^find\\b"
+
+# ─── Triggers ─────────────────────────────────────────────────────────────
+triggers:
+  - type: mention
+    surface: discord
+    channelPattern: "*"                     # Echo answers review pings anywhere
+  - type: cli
+    command: code-review                    # arc-skill-code-review entry
+
+# ─── Lifecycle hooks ──────────────────────────────────────────────────────
+# Future: same AgentState integration story as Luna (gated on grove#245).
+hooks: {}
+
+# ─── Roster ───────────────────────────────────────────────────────────────
+roster:
+  - name: luna
+    role: peer-pilot
+  - name: forge
+    role: release-agent
+  - name: ivy
+    role: peer-pilot
+
+# ─── Instance state spec ──────────────────────────────────────────────────
+instanceStateSpec:
+  blueprint: AgentState
+  version: ">=0.2.0"
+
+# ─── Instantiation hint ───────────────────────────────────────────────────
+instantiation:
+  scope: per-host

@@ -1,0 +1,132 @@
+# Luna — coordinator agent for the metafactory ecosystem.
+#
+# Per the design (forge/design/agent-platform.md §"Field-by-field reference"),
+# this manifest captures Luna's identity, persona, guardrails, triggers,
+# hooks, roster, and instance state spec — the canonical source from which
+# the host (grove) derives bot.yaml entries on `grove install agent luna`.
+#
+# Reverse-engineered from ~/.config/grove/bot.yaml (discord-luna adapter)
+# during Phase 8 migration (forge#6). Operator review encouraged before
+# checkin to a stable repo (e.g. the-metafactory/metafactory-agents).
+
+schema: pai/v1
+namespace: metafactory
+type: agent
+name: luna
+version: 0.1.0
+tier: custom
+
+description: "Luna — Andreas's coordinator agent. Drives feature work, coordinates with Echo (review) and Forge (release), follows compass SOPs."
+
+author:
+  name: Andreas Aastroem
+  github: mellanon
+
+# ─── Identity (per-host surface) ──────────────────────────────────────────
+identity:
+  displayName: Luna
+  shortName: luna
+  oneLine: Coordinator agent — drives feature work, coordinates with Echo and Forge
+  channels:
+    discord:
+      botId: "1487180524542890144"
+      preferredChannels: ["#grove"]
+      dmEnabled: true
+
+# ─── Persona ──────────────────────────────────────────────────────────────
+# Voice + routing table. Operator override: ~/.config/grove/personas/luna.md.local
+persona:
+  file: persona.md
+
+# ─── Blueprints (skill bundles Luna leans on) ─────────────────────────────
+# Luna doesn't compose arc-installable bundles today (her skills come from the
+# broader PAI runtime). Empty list is intentional and documented; future
+# bundle adoption (e.g. AgentState for instance state, BlueprintTracker for
+# planning surface) can be added here without changing identity or guardrails.
+blueprints: []
+
+# ─── Guardrails (declarative authority — host enforces) ───────────────────
+guardrails:
+  allowedDirs:
+    - ~/Developer/grove
+    - ~/Developer/grove-auth
+    - ~/Developer/meta-factory
+    - ~/Developer/arc
+    - ~/Developer/miner
+    - ~/Developer/miner-server
+    - ~/Developer/blueprint
+    - ~/Developer/admin
+    - ~/Developer/compass
+    - ~/Developer/pulse
+    - ~/Developer/spawn
+    - ~/Developer/ecosystem-digest
+    - ~/Developer/handover-digest
+    - ~/Developer/test-rig
+    - ~/Developer/forge
+    - ~/Developer/release-manager
+    - ~/Developer/agent-state
+    - ~/Developer/metafactory-agents
+  readOnlyDirs:
+    - ~/Developer/compass                   # SOPs are read-only
+  allowedSkills: []                         # No arc-installed skill bundles today
+  disallowedTools: []                       # Luna has full tool surface (Edit, Write, Task)
+  bashAllowlist:
+    rules:
+      - pattern: "^gh\\s+"
+      - pattern: "^git\\s+"
+      - pattern: "^bun\\s+"
+      - pattern: "^npm\\s+"
+      - pattern: "^ls\\b"
+      - pattern: "^pwd$"
+      - pattern: "^cat\\b"
+      - pattern: "^head\\b"
+      - pattern: "^tail\\b"
+      - pattern: "^wc\\b"
+      - pattern: "^which\\b"
+      - pattern: "^mkdir\\b"
+      - pattern: "^cp\\b"
+      - pattern: "^mv\\b"
+      - pattern: "^rm\\b"
+      - pattern: "^echo\\b"
+      - pattern: "^curl\\b"
+      - pattern: "^jq\\b"
+      - pattern: "^bunx\\s+"
+      - pattern: "^pilot\\s+"
+      - pattern: "^discord\\s+"
+      - pattern: "^arc\\s+"
+
+# ─── Triggers (when Luna activates) ───────────────────────────────────────
+triggers:
+  - type: mention
+    surface: discord
+    channelPattern: "*"                     # Luna can be mentioned in any channel; DMs handled via dmEnabled in identity
+  - type: cli
+    command: cldyo                          # `cldyo`/`cldyo-live` wrapper
+
+# ─── Lifecycle hooks ──────────────────────────────────────────────────────
+# No AgentState integration yet. Filed as future work — Luna's instance state
+# is currently embedded in CC session state, not in `state.sqlite`. When
+# Luna composes AgentState as a blueprint (post-grove#245 host-runs-hooks),
+# wire onStart / onMessageAccepted / onStateTransition / onError / onShutdown
+# here to AgentState/* workflows.
+hooks: {}
+
+# ─── Roster (sibling agents Luna knows about) ─────────────────────────────
+roster:
+  - name: echo
+    role: code-reviewer
+  - name: forge
+    role: release-agent
+  - name: ivy
+    role: peer-pilot                        # JC's coordinator (separate operator team)
+
+# ─── Instance state spec ──────────────────────────────────────────────────
+# Today: Luna doesn't materialize per-instance state under
+# ~/.config/<host>/agents/luna/. Future: AgentState bundle here.
+instanceStateSpec:
+  blueprint: AgentState
+  version: ">=0.2.0"
+
+# ─── Instantiation hint ───────────────────────────────────────────────────
+instantiation:
+  scope: per-host                           # Luna runs in one Grove instance per operator
