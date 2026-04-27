@@ -89,13 +89,21 @@ guardrails:
       # PRs; tightening at the policy floor mirrors the same defense-in-depth
       # logic applied to `gh issue` above. Holly review on agents#4 cycle-2.
       - pattern: "^gh\\s+pr\\s+(list|view|diff|checks|status)\\b"
-      # gh — remaining read-only surfaces for context-gathering and label
-      # discovery. `gh api` is intentionally NOT included — it permits
-      # arbitrary REST calls including PATCH/DELETE mutations that would
-      # bypass the verb restrictions above (e.g. `gh api repos/.../issues/N
-      # -X PATCH -f state=closed` would close an issue despite
-      # `gh issue close` being blocked). Holly review on agents#4 cycle-1.
-      - pattern: "^gh\\s+(search|label|repo|status)\\b"
+      # gh repo — read-only verbs only. `gh repo` matches `delete`, `edit`,
+      # `archive`, `rename`, `create`, `fork` — none belong on Juniper's
+      # policy floor. Holly review on agents#4 cycle-3.
+      - pattern: "^gh\\s+repo\\s+(view|list)\\b"
+      # gh label — read-only. Persona forbids ad-hoc label creation;
+      # mirror that at the policy floor (no `create`/`edit`/`delete`).
+      # Holly review on agents#4 cycle-3.
+      - pattern: "^gh\\s+label\\s+list\\b"
+      # gh — remaining read-only top-level surfaces. `gh api` is intentionally
+      # NOT included — it permits arbitrary REST calls including PATCH/DELETE
+      # mutations that would bypass the verb restrictions above
+      # (e.g. `gh api repos/.../issues/N -X PATCH -f state=closed` would
+      # close an issue despite `gh issue close` being blocked).
+      # Holly review on agents#4 cycle-1.
+      - pattern: "^gh\\s+(search|status)\\b"
       # git — read-only verbs for context-gathering before filing.
       - pattern: "^git\\s+(log|diff|show|status|branch|fetch|remote|rev-parse|ls-files|cat-file|blame)\\b"
       # File reads for harvesting transcripts / context.
@@ -136,9 +144,11 @@ roster:
     role: release
 
 # ─── Instance state ──────────────────────────────────────────────────────
-instanceStateSpec:
+# Use the canonical §12 shape (Luna/Echo convention) — `state:` + top-level
+# `installScope:`. The pre-canonical aliases (`instanceStateSpec:` +
+# `instantiation.scope:`) emit deprecation warnings on install.
+state:
   blueprint: AgentState
   version: ">=0.2.0"
 
-instantiation:
-  scope: per-host
+installScope: per-host
