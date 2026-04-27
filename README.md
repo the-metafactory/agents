@@ -21,12 +21,12 @@ metafactory-agents/
 ├── holly/               ← scaffolded; JC fills TODOs before install
 │   ├── arc-manifest.yaml
 │   └── persona.md
-└── distiller/           ← scaffolded; JC fills TODOs before install
+└── juniper/            ← PM-style backlog agent (botanical sibling); runs the `distiller` skill
     ├── arc-manifest.yaml
     └── persona.md
 ```
 
-(Forge has its own repo at `the-metafactory/forge` because Forge is a release agent with its own design + retro lifecycle. Luna/Echo/Ivy/Holly/Distiller are simpler agents and live together here.)
+(Forge has its own repo at `the-metafactory/forge` because Forge is a release agent with its own design + retro lifecycle. Luna/Echo/Ivy/Holly/Juniper are simpler agents and live together here.)
 
 ## Status (2026-04-27)
 
@@ -35,9 +35,9 @@ metafactory-agents/
 | Forge | ✅ (in `the-metafactory/forge`) | ✅ (Phase 7 dogfood) | Released as Forge v0.2.0 same day; manifest migrated to new schema (state, installScope) |
 | Luna | ✅ this repo (canonical `agent-luna`) | ✅ via `grove install agent` | `mentionRole: agent-restricted` captures Luna's narrow cross-adapter authority |
 | Echo | ✅ this repo (canonical `agent-echo`) | ✅ via `grove install agent` | Same `mentionRole` shape; review-only across the board |
-| Ivy | scaffold (JC fills TODOs) | (JC-owned, JC's host) | botId 1487024060411023491 known from Andreas's `trustedAgentBots`. See `ivy/arc-manifest.yaml` |
-| Holly | scaffold (JC fills TODOs) | (JC-owned, JC's host) | Role + scope TBD by JC. See `holly/arc-manifest.yaml` |
-| Distiller | scaffold (JC fills TODOs) | (JC-owned, JC's host) | New agent: project-manager backlog distillation. Tracker: [#2](https://github.com/the-metafactory/agents/issues/2) |
+| Ivy | ✅ this repo (canonical `agent-ivy`) | ✅ via `grove install agent` (JC-owned host) | Coordinator on JC's side. Operator role + dm.operatorRole installed via grove#266 fix |
+| Holly | ✅ this repo (canonical `agent-holly`) | ✅ via `grove install agent` (JC-owned host) | Adversarial reviewer on JC's side. Reviewer-class shape, no DM |
+| Juniper | ✅ this repo (canonical `agent-juniper`) | (JC-owned, JC's host) — pending Discord app creation | PM-style backlog agent. Reads threads, runs `Skill("distiller")`, files GitHub issues with two-phase confirmation |
 
 ## How to install (current)
 

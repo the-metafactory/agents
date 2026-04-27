@@ -85,13 +85,17 @@ guardrails:
       # leaning on persona-as-guardrail (Holly review on agents#4 —
       # defense-in-depth on the privileged verb).
       - pattern: "^gh\\s+issue\\s+(create|list|view|status|search)\\b"
-      # gh — read-only surfaces for context-gathering and label discovery.
-      # `gh api` is intentionally NOT included — it permits arbitrary REST
-      # calls including PATCH/DELETE mutations that would bypass the
-      # `gh issue` verb restriction (e.g. `gh api repos/.../issues/N -X PATCH
-      # -f state=closed` would close an issue despite `gh issue close` being
-      # blocked). Holly review on agents#4 cycle-1.
-      - pattern: "^gh\\s+(pr|search|label|repo|status)\\b"
+      # gh pr — read-only verbs only. The persona never closes/merges/edits
+      # PRs; tightening at the policy floor mirrors the same defense-in-depth
+      # logic applied to `gh issue` above. Holly review on agents#4 cycle-2.
+      - pattern: "^gh\\s+pr\\s+(list|view|diff|checks|status)\\b"
+      # gh — remaining read-only surfaces for context-gathering and label
+      # discovery. `gh api` is intentionally NOT included — it permits
+      # arbitrary REST calls including PATCH/DELETE mutations that would
+      # bypass the verb restrictions above (e.g. `gh api repos/.../issues/N
+      # -X PATCH -f state=closed` would close an issue despite
+      # `gh issue close` being blocked). Holly review on agents#4 cycle-1.
+      - pattern: "^gh\\s+(search|label|repo|status)\\b"
       # git — read-only verbs for context-gathering before filing.
       - pattern: "^git\\s+(log|diff|show|status|branch|fetch|remote|rev-parse|ls-files|cat-file|blame)\\b"
       # File reads for harvesting transcripts / context.
