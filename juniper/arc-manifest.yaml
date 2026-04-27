@@ -80,8 +80,13 @@ guardrails:
     - Task # PM agent doesn't spawn sub-agents
   bashAllowlist:
     rules:
-      # gh — `gh issue create` is the privileged verb; rest read-only.
-      - pattern: "^gh\\s+(issue|pr|api|search|label|repo|status)\\b"
+      # gh issue — narrow the verb set explicitly. The persona forbids
+      # `edit` and `close`; tighten the policy floor to match instead of
+      # leaning on persona-as-guardrail (Holly review on agents#4 —
+      # defense-in-depth on the privileged verb).
+      - pattern: "^gh\\s+issue\\s+(create|list|view|status|search)\\b"
+      # gh — read-only surfaces for context-gathering and label discovery.
+      - pattern: "^gh\\s+(pr|api|search|label|repo|status)\\b"
       # git — read-only verbs for context-gathering before filing.
       - pattern: "^git\\s+(log|diff|show|status|branch|fetch|remote|rev-parse|ls-files|cat-file|blame)\\b"
       # File reads for harvesting transcripts / context.
