@@ -7,6 +7,7 @@ Manifests + persona files for the metafactory ecosystem's persona-driven agents.
 ```
 metafactory-agents/
 ├── README.md            ← this file
+├── CREATING.md          ← keys-handover for new agent operators (post-Phase-9)
 ├── MIGRATING.md         ← step-by-step for migrating an existing agent
 ├── luna/
 │   ├── arc-manifest.yaml
@@ -14,21 +15,29 @@ metafactory-agents/
 ├── echo/
 │   ├── arc-manifest.yaml
 │   └── persona.md
-└── ivy/
-    └── PLACEHOLDER.md   ← JC drives this when ready
+├── ivy/                 ← scaffolded; JC fills TODOs before install
+│   ├── arc-manifest.yaml
+│   └── persona.md
+├── holly/               ← scaffolded; JC fills TODOs before install
+│   ├── arc-manifest.yaml
+│   └── persona.md
+└── distiller/           ← scaffolded; JC fills TODOs before install
+    ├── arc-manifest.yaml
+    └── persona.md
 ```
 
-(Forge has its own repo at `the-metafactory/forge` because Forge is a release agent with its own design + retro lifecycle. Luna/Echo/Ivy are simpler agents and live together here.)
+(Forge has its own repo at `the-metafactory/forge` because Forge is a release agent with its own design + retro lifecycle. Luna/Echo/Ivy/Holly/Distiller are simpler agents and live together here.)
 
 ## Status (2026-04-27)
 
 | Agent | Manifest written | Installed via pipeline | Notes |
 |---|---|---|---|
 | Forge | ✅ (in `the-metafactory/forge`) | ✅ (Phase 7 dogfood) | Released as Forge v0.2.0 same day; manifest migrated to new schema (state, installScope) |
-| Luna | ✅ this repo | ✅ via `grove install agent` | `mentionRole: agent-restricted` captures Luna's narrow cross-adapter authority |
-| Echo | ✅ this repo | ✅ via `grove install agent` | Same `mentionRole` shape; review-only across the board |
-| Ivy | placeholder | (JC-owned) | See `MIGRATING.md` for JC's recipe |
-| Holly | placeholder | (JC-owned) | See `MIGRATING.md` for JC's recipe |
+| Luna | ✅ this repo (canonical `agent-luna`) | ✅ via `grove install agent` | `mentionRole: agent-restricted` captures Luna's narrow cross-adapter authority |
+| Echo | ✅ this repo (canonical `agent-echo`) | ✅ via `grove install agent` | Same `mentionRole` shape; review-only across the board |
+| Ivy | scaffold (JC fills TODOs) | (JC-owned, JC's host) | botId 1487024060411023491 known from Andreas's `trustedAgentBots`. See `ivy/arc-manifest.yaml` |
+| Holly | scaffold (JC fills TODOs) | (JC-owned, JC's host) | Role + scope TBD by JC. See `holly/arc-manifest.yaml` |
+| Distiller | scaffold (JC fills TODOs) | (JC-owned, JC's host) | New agent: project-manager backlog distillation. Tracker: [#2](https://github.com/the-metafactory/agents/issues/2) |
 
 ## How to install (current)
 

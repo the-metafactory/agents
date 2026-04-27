@@ -1,0 +1,107 @@
+# Holly — JC's reviewer agent (peer-reviewer to Echo on Andreas's side).
+#
+# Reverse-engineered from JC's hand-configured `~/.config/grove/bot.yaml`
+# `discord-holly` adapter and the curated `~/.config/grove/personas/holly.md`.
+# Reviewer-class — mostly read, never code-mutating. Mirror of Echo's shape
+# but bound to JC's host (~/work/mf) and JC's review voice.
+
+schema: pai/v1
+namespace: metafactory
+type: agent
+name: agent-holly
+version: 0.1.0
+tier: custom
+
+description: "Holly — JC's adversarial reviewer. Drives the multi-lens PR review workflow on JC's metafactory repos; peer to Echo across the operator boundary."
+
+author:
+  name: "Jens-Christian"
+  github: "jcfischer"
+
+# ─── Identity (per-host surface) ──────────────────────────────────────────
+identity:
+  displayName: Holly
+  shortName: holly
+  oneLine: "Adversarial code reviewer for JC's metafactory work"
+  channels:
+    discord:
+      # Holly's Discord application user ID (from JC's existing bot.yaml).
+      botId: "1497898452351455393"
+      preferredChannels: ['#meta-factory'] # Holly reviews land in the agent channel
+      dmEnabled: false # Holly never DMs — reviewer, not coordinator
+
+# ─── Persona ─────────────────────────────────────────────────────────────
+persona:
+  file: persona.md
+
+# ─── Cross-adapter authority ─────────────────────────────────────────────
+# When Holly is mentioned by another bot (e.g. Pilot), this names the role
+# whose guardrails apply on the receiving Discord adapter. The role MUST
+# exist in `roles[]` of every Discord-instance JC's grove-bot serves.
+mentionRole: agent-restricted
+
+# ─── Blueprints (arc bundles to compose) ─────────────────────────────────
+blueprints:
+  - name: arc-skill-code-review
+    version: ">=0.1.0"
+
+# ─── Guardrails (declarative authority) ──────────────────────────────────
+# Reviewer-class shape: read everything in JC's metafactory tree; post
+# findings via gh CLI; never mutate code directly.
+guardrails:
+  allowedDirs:
+    - "~/work/mf"
+  readOnlyDirs:
+    - "~/work/mf/compass" # ecosystem SOPs are read-only for everyone
+  allowedSkills:
+    - code-review
+  # Holly's role is review-only — no code mutation.
+  disallowedTools:
+    - Edit
+    - Write
+    - NotebookEdit
+    - Task
+  bashAllowlist:
+    rules:
+      - pattern: "^gh\\s+"
+      - pattern: "^git\\s+(log|diff|show|status|branch|fetch|remote|rev-parse|ls-files|cat-file|blame)\\b"
+      - pattern: "^ls\\b"
+      - pattern: "^pwd$"
+      - pattern: "^cat\\b"
+      - pattern: "^head\\b"
+      - pattern: "^tail\\b"
+      - pattern: "^wc\\b"
+      - pattern: "^which\\b"
+      - pattern: "^grep\\b"
+      - pattern: "^rg\\b"
+      - pattern: "^find\\b"
+
+# ─── Triggers (when Holly activates) ─────────────────────────────────────
+triggers:
+  - type: mention
+    surface: discord
+    channelPattern: "*"
+  - type: cli
+    command: holly
+
+# ─── Hooks (lifecycle) — Phase 10 work; leave empty for now ──────────────
+hooks: {}
+
+# ─── Roster (sibling agents Holly knows about) ───────────────────────────
+roster:
+  - name: agent-ivy
+    role: coordinator-on-jc-side
+  - name: agent-luna
+    role: coordinator-on-andreas-side
+  - name: agent-echo
+    role: reviewer-on-andreas-side
+  - name: agent-forge
+    role: release
+
+# ─── Instance state ──────────────────────────────────────────────────────
+instanceStateSpec:
+  blueprint: AgentState
+  version: ">=0.2.0"
+
+instantiation:
+  scope: per-host
