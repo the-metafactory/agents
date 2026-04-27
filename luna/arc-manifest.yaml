@@ -120,13 +120,20 @@ roster:
   - name: ivy
     role: peer-pilot                        # JC's coordinator (separate operator team)
 
-# ─── Instance state spec ──────────────────────────────────────────────────
+# ─── Instance state ───────────────────────────────────────────────────────
 # Today: Luna doesn't materialize per-instance state under
 # ~/.config/<host>/agents/luna/. Future: AgentState bundle here.
-instanceStateSpec:
+state:
   blueprint: AgentState
   version: ">=0.2.0"
 
-# ─── Instantiation hint ───────────────────────────────────────────────────
-instantiation:
-  scope: per-host                           # Luna runs in one Grove instance per operator
+# ─── Install scope ────────────────────────────────────────────────────────
+installScope: per-host                      # Luna runs in one Grove instance per operator
+
+# ─── Cross-adapter role (the asymmetry) ───────────────────────────────────
+# When Luna @-mentions another agent's adapter (Echo for review pings, Forge
+# for release coordination), Luna's session runs as agent-restricted on the
+# receiving side — chat-only, no Edit/Write/Task. Luna's own-adapter
+# authority (guardrails above) is broad; the cross-adapter role is narrow.
+# This is THE Phase 8 asymmetry — captured here per grove#258.
+mentionRole: agent-restricted

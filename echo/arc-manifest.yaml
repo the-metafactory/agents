@@ -107,11 +107,17 @@ roster:
   - name: ivy
     role: peer-pilot
 
-# ─── Instance state spec ──────────────────────────────────────────────────
-instanceStateSpec:
+# ─── Instance state ───────────────────────────────────────────────────────
+state:
   blueprint: AgentState
   version: ">=0.2.0"
 
-# ─── Instantiation hint ───────────────────────────────────────────────────
-instantiation:
-  scope: per-host
+# ─── Install scope ────────────────────────────────────────────────────────
+installScope: per-host
+
+# ─── Cross-adapter role (the asymmetry) ───────────────────────────────────
+# Echo's role is review-only across the board. When Echo posts a review
+# verdict on someone else's adapter (which she doesn't, today — she posts to
+# GitHub), the cross-adapter role would still be agent-restricted. Symmetric
+# in narrowness; asymmetric vs Forge (whose default agent-forge is broad).
+mentionRole: agent-restricted

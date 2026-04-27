@@ -24,27 +24,30 @@ metafactory-agents/
 
 | Agent | Manifest written | Installed via pipeline | Notes |
 |---|---|---|---|
-| Forge | ✅ (in `the-metafactory/forge`) | ✅ (Phase 7 dogfood) | Released as Forge v0.2.0 the same day |
-| Luna | ✅ this repo | ⏸ blocked on grove#257 | Manifest validates; install conflicts with existing trustedAgentBots pin |
-| Echo | ✅ this repo | ⏸ blocked on grove#257 | Same blocker as Luna |
-| Ivy | placeholder | (JC-owned) | See `MIGRATING.md` for JC's recipe when ready |
+| Forge | ✅ (in `the-metafactory/forge`) | ✅ (Phase 7 dogfood) | Released as Forge v0.2.0 same day; manifest migrated to new schema (state, installScope) |
+| Luna | ✅ this repo | ✅ via `grove install agent` | `mentionRole: agent-restricted` captures Luna's narrow cross-adapter authority |
+| Echo | ✅ this repo | ✅ via `grove install agent` | Same `mentionRole` shape; review-only across the board |
+| Ivy | placeholder | (JC-owned) | See `MIGRATING.md` for JC's recipe |
+| Holly | placeholder | (JC-owned) | See `MIGRATING.md` for JC's recipe |
 
-## How to install once grove#257 lands
+## How to install (current)
+
+After grove#258 (mentionRole + schema renames) merged, the install for migrating agents is one command — no flag needed because the manifest's `mentionRole` declares the cross-adapter role explicitly:
 
 ```bash
-source ~/.config/grove/.luna-reinstall-backup/secrets.env  # or .echo-reinstall-backup/
+LUNA_TOKEN=$(grep -A1 "instanceId: discord-luna" ~/.config/grove/bot.yaml | grep token: | sed 's/.*token: //')
 
-cd /path/to/grove
-bun src/cli/grove.ts install agent ./luna/arc-manifest.yaml \
-  --discord-token "$DISCORD_TOKEN" \
-  --discord-bot-id "$DISCORD_BOT_ID" \
-  --discord-guild "$DISCORD_GUILD" \
-  --discord-channel "$DISCORD_CHANNEL" \
-  --skip-trusted-bot-pin \   # flag added by grove#257
+bun /path/to/grove/src/cli/grove.ts install agent ./luna/arc-manifest.yaml \
+  --discord-token "$LUNA_TOKEN" \
+  --discord-bot-id "1487180524542890144" \
+  --discord-guild "1487023327791808592" \
+  --discord-channel "1487029848164536361" \
   --yes
 ```
 
-Then restart grove-bot. See `MIGRATING.md` for the full procedure.
+Hot-reload is automatic via AP-104 (`config-watcher` includes `trustedAgentBots` + `discord[].roles[]` in `SAFE_FIELDS`). No grove-bot restart needed.
+
+See `MIGRATING.md` for the full procedure including troubleshooting.
 
 ## Why this matters
 

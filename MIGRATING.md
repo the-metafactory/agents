@@ -171,17 +171,35 @@ The persona file's safe-rename backup (if you're using uninstall) is at `~/.conf
 
 ---
 
-## For JC migrating Ivy
+## For JC migrating Ivy + Holly
 
-Same recipe, JC-side:
+JC operates two agents — **Ivy** (coordinator, peer to Luna) and **Holly** (TBD by JC). Same recipe for both, JC-side:
 
-1. Hand-write `~/.config/grove/agents/ivy/arc-manifest.yaml` (or commit it to wherever JC tracks operator config) — use Echo's manifest in this repo as the closest shape (Ivy is also a coordinator/reviewer-class agent, not a release-class one).
-2. Save Ivy's secrets to the side: token, bot ID, guild, channel.
-3. Run `grove install agent <ivy-manifest> --discord-token X --discord-bot-id Y ...` against JC's grove-bot's `bot.yaml`.
-4. Restart grove-bot.
-5. Smoke test.
+### Per-agent steps
 
-The manifest-driven config makes Ivy survive operator-config moves cleanly — no more hand-edited bot.yaml drift.
+1. **Hand-write the manifest.** Pick the closest shape from `../luna/arc-manifest.yaml` (coordinator) or `../echo/arc-manifest.yaml` (reviewer). For each agent:
+   - Update `name`, `identity.displayName`, `identity.shortName`, `identity.oneLine`
+   - Set `identity.channels.discord.botId` (JC's bot ID for that agent)
+   - Set `guardrails.allowedDirs` etc. to match what's in JC's existing `bot.yaml` for that agent
+   - **`mentionRole`**: if the agent's authority on its own adapter differs from what it should have when @-mentioning peers (almost always YES for coordinator-class agents), declare `mentionRole: agent-restricted` (or whatever narrow role JC has pinned for the agent in `trustedAgentBots`). Omit only for symmetric release-class agents like Forge.
+2. **Save secrets out-of-band** — token + bot ID + guild + channel for each agent into a `~/.config/grove/.<name>-reinstall-backup/secrets.env` file.
+3. **Dry-run** the install to see the bot.yaml diff: `grove install agent <ivy-manifest> --discord-token X --discord-bot-id Y --discord-guild Z --discord-channel W --dry-run`.
+4. **Apply** with `--yes` (or skip the flag for interactive confirm).
+5. **Hot-reload** is automatic — AP-104 (grove#243) means `bot.yaml` changes to `discord[].roles[]` and `trustedAgentBots[]` no longer require a grove-bot restart. Confirm via the bot logs that the role applied.
+6. **Smoke test**: ping the migrated agent in its channel; verify it responds with the right authority.
+
+### Holly-specific note
+
+Holly's role/scope is for JC to determine. If Holly is a peer to Ivy (coordinator-class), copy Luna's manifest shape. If reviewer-class, copy Echo's. The mechanics are identical — only the manifest values differ.
+
+### What's preserved across the migration
+
+- The bot tokens (operator-supplied; `--discord-token` keeps them out of the manifest)
+- Operator-tuned `trustedAgentBots` pins (the install respects existing pins via `mentionRole` semantics — no `--update-trusted-bot-pin` needed unless JC explicitly wants to change a pin)
+- Persona file content (three-way merge if JC has local overrides)
+- Instance state at `~/.config/grove/agents/<name>/` (preserved by default; pass `--remove-instance-state` to uninstall to wipe)
+
+The manifest-driven config makes Ivy + Holly survive operator-config moves cleanly — no more hand-edited bot.yaml drift.
 
 ---
 
