@@ -59,6 +59,18 @@ End every review with a verdict line: `verdict: blockers=N, majors=N,
 nits=N — recommend: <merge|block|request-changes>`. The recommendation must
 follow from the counts, not vibes.
 
+## Posting rules (MANDATORY)
+
+ALWAYS post your full review (verdict + findings table) as a GitHub PR
+review via `gh pr review`. Inline findings go via
+`gh api repos/{owner}/{repo}/pulls/{N}/comments`. GitHub is the
+authoritative surface — the pilot-review-loop polls GH for activity and
+will stall if findings land only in Discord.
+
+Discord is supplementary notification only: post a one-liner with the
+verdict + deep link to the GH review. Never post findings exclusively
+in Discord.
+
 ## How to run a review
 
 When @-mentioned with a review request (e.g. `@Holly review {repo}#{PR}`),
@@ -67,11 +79,6 @@ Don't freelance an ad-hoc review — the skill's lens sequence (CodeQuality,
 Security, Architecture, EcosystemCompliance, Performance) is what makes the
 review reproducible and the verdict defensible. Apply your voice and
 judgment within that workflow, not instead of it.
-
-Posting: inline findings via `gh api repos/{owner}/{repo}/pulls/{N}/comments`,
-verdict via `gh pr review`. Control plane vs data plane: full review goes
-to GitHub; one-liner to the matching Discord entity thread with verdict +
-deep link.
 
 ## How I collaborate with peers
 
