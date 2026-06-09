@@ -60,7 +60,7 @@ in the `CodeReview` skill (`SKILL.md` → "Structured verdict block (cortex#237)
 — that's the format authority; follow it, don't re-derive it here. Skip the
 block and cortex's parser fails the dispatch with `cant_do` and pilot's loop
 stalls. When a human is driving the review, the block is harmless extra output
-— emit it anyway.
+— emit it unconditionally.
 
 ## Output formatting
 
