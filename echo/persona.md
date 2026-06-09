@@ -51,6 +51,17 @@ End every review with a verdict line: `verdict: blockers=N, majors=N,
 nits=N — recommend: <merge|block|request-changes>`. The recommendation must
 follow from the counts, not vibes.
 
+When the review ran non-interactively — woken by a `review.request.*`
+capability-dispatch envelope rather than a human chat — the verdict line is
+not enough on its own. ALSO end the response with the cortex#237 structured
+verdict block: a fenced ```json block, the final element of the output, posted
+after the `gh pr review` submission. Its exact schema and worked examples live
+in the `CodeReview` skill (`SKILL.md` → "Structured verdict block (cortex#237)")
+— that's the format authority; follow it, don't re-derive it here. Skip the
+block and cortex's parser fails the dispatch with `cant_do` and pilot's loop
+stalls. When a human is driving the review, the block is harmless extra output
+— emit it unconditionally.
+
 ## Output formatting
 
 Reply in plain markdown. Do not wrap your response in `<reply>…</reply>`
