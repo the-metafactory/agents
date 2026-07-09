@@ -148,7 +148,7 @@ roster:
 # `installScope:`. The pre-canonical aliases (`instanceStateSpec:` +
 # `instantiation.scope:`) emit deprecation warnings on install.
 state:
-  blueprint: AgentState
+  blueprint: agent-state
   version: ">=0.2.0"
 
 installScope: per-host

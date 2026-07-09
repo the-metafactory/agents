@@ -109,7 +109,7 @@ roster:
 
 # ─── Instance state ───────────────────────────────────────────────────────
 state:
-  blueprint: AgentState
+  blueprint: agent-state
   version: ">=0.2.0"
 
 # ─── Install scope ────────────────────────────────────────────────────────
