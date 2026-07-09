@@ -10,7 +10,7 @@
 # the SKILL it invokes is "distiller" (the verb / underlying capability,
 # stable per D-200 keyword routing). Don't rename the skill.
 
-schema: pai/v1
+schema: arc/v1
 namespace: metafactory
 type: agent
 name: agent-juniper

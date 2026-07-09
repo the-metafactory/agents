@@ -12,7 +12,7 @@
 # Pre-filled where Andreas/Luna can be confident from existing context;
 # everything else is `TODO(JC)`.
 
-schema: pai/v1
+schema: arc/v1
 namespace: metafactory
 type: agent
 name: agent-ivy
@@ -110,7 +110,7 @@ roster:
     role: code-reviewer
 
 # ─── Instance state ──────────────────────────────────────────────────────
-instanceStateSpec:
+state:
   blueprint: AgentState
   version: ">=0.2.0"
 

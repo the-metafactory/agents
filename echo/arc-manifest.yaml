@@ -9,7 +9,7 @@
 # during Phase 8 migration (forge#6). Operator review encouraged before
 # checkin to a stable repo (e.g. the-metafactory/metafactory-agents).
 
-schema: pai/v1
+schema: arc/v1
 namespace: metafactory
 type: agent
 name: agent-echo

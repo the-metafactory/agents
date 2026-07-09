@@ -5,7 +5,7 @@
 # Reviewer-class — mostly read, never code-mutating. Mirror of Echo's shape
 # but bound to JC's host (~/work/mf) and JC's review voice.
 
-schema: pai/v1
+schema: arc/v1
 namespace: metafactory
 type: agent
 name: agent-holly
@@ -99,7 +99,7 @@ roster:
     role: release
 
 # ─── Instance state ──────────────────────────────────────────────────────
-instanceStateSpec:
+state:
   blueprint: AgentState
   version: ">=0.2.0"
 
