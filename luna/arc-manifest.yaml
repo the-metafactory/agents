@@ -29,7 +29,7 @@ identity:
   oneLine: Coordinator agent — drives feature work, coordinates with Echo and Forge
   channels:
     discord:
-      botId: "1487180524542890144"
+      botId: "YOUR-LUNA-BOT-ID"    # placeholder — set from your own Discord app; never commit live IDs
       preferredChannels: ["#grove"]
       dmEnabled: true
 
