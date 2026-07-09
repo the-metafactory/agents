@@ -5,7 +5,7 @@
 # Reviewer-class — mostly read, never code-mutating. Mirror of Echo's shape
 # but bound to JC's host (~/work/mf) and JC's review voice.
 
-schema: pai/v1
+schema: arc/v1
 namespace: metafactory
 type: agent
 name: agent-holly
@@ -26,7 +26,7 @@ identity:
   channels:
     discord:
       # Holly's Discord application user ID (from JC's existing bot.yaml).
-      botId: "1497898452351455393"
+      botId: "YOUR-HOLLY-BOT-ID"   # placeholder — set from your own Discord app; never commit live IDs
       preferredChannels: ['#meta-factory'] # Holly reviews land in the agent channel
       dmEnabled: false # Holly never DMs — reviewer, not coordinator
 
@@ -99,7 +99,7 @@ roster:
     role: release
 
 # ─── Instance state ──────────────────────────────────────────────────────
-instanceStateSpec:
+state:
   blueprint: AgentState
   version: ">=0.2.0"
 

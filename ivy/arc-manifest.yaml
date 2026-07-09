@@ -12,7 +12,7 @@
 # Pre-filled where Andreas/Luna can be confident from existing context;
 # everything else is `TODO(JC)`.
 
-schema: pai/v1
+schema: arc/v1
 namespace: metafactory
 type: agent
 name: agent-ivy
@@ -35,7 +35,7 @@ identity:
       # Ivy's Discord application user ID — known from Andreas's
       # bot.yaml `trustedAgentBots` row. Verify it's still the right ID
       # for JC's host (it should be — same Ivy bot, same identity).
-      botId: "1487024060411023491"
+      botId: "YOUR-IVY-BOT-ID"     # placeholder — set from your own Discord app; never commit live IDs
       preferredChannels: ['#meta-factory'] # list channels Ivy should bias towards
       dmEnabled: true # true if Ivy talks 1:1, false otherwise
 
@@ -110,7 +110,7 @@ roster:
     role: code-reviewer
 
 # ─── Instance state ──────────────────────────────────────────────────────
-instanceStateSpec:
+state:
   blueprint: AgentState
   version: ">=0.2.0"
 

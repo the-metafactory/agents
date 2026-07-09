@@ -48,9 +48,9 @@ LUNA_TOKEN=$(grep -A1 "instanceId: discord-luna" ~/.config/grove/bot.yaml | grep
 
 bun /path/to/grove/src/cli/grove.ts install agent ./luna/arc-manifest.yaml \
   --discord-token "$LUNA_TOKEN" \
-  --discord-bot-id "1487180524542890144" \
-  --discord-guild "1487023327791808592" \
-  --discord-channel "1487029848164536361" \
+  --discord-bot-id "YOUR-BOT-ID" \
+  --discord-guild "YOUR-GUILD-ID" \
+  --discord-channel "YOUR-CHANNEL-ID" \
   --yes
 ```
 

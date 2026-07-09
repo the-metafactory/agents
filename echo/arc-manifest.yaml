@@ -9,7 +9,7 @@
 # during Phase 8 migration (forge#6). Operator review encouraged before
 # checkin to a stable repo (e.g. the-metafactory/metafactory-agents).
 
-schema: pai/v1
+schema: arc/v1
 namespace: metafactory
 type: agent
 name: agent-echo
@@ -29,7 +29,7 @@ identity:
   oneLine: Code reviewer — drives the multi-lens PR review workflow for the pilot loop
   channels:
     discord:
-      botId: "1497872105067253800"
+      botId: "YOUR-ECHO-BOT-ID"    # placeholder — set from your own Discord app; never commit live IDs
       preferredChannels: ["#grove", "#forge", "#test-rig", "#arc"]
       dmEnabled: true
 
