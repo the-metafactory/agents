@@ -88,8 +88,7 @@ roster: [{ name: ..., role: ... }, ...]
 state:
   blueprint: agent-state
   version: ">=0.2.0"
-instantiation:
-  scope: per-host
+installScope: per-host
 ```
 
 Reference `forge/agent/arc-manifest.yaml` for a full canonical example.

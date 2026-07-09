@@ -103,5 +103,4 @@ state:
   blueprint: agent-state
   version: ">=0.2.0"
 
-instantiation:
-  scope: per-host
+installScope: per-host
