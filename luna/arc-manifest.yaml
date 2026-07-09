@@ -124,7 +124,7 @@ roster:
 # Today: Luna doesn't materialize per-instance state under
 # ~/.config/<host>/agents/luna/. Future: AgentState bundle here.
 state:
-  blueprint: AgentState
+  blueprint: agent-state
   version: ">=0.2.0"
 
 # ─── Install scope ────────────────────────────────────────────────────────

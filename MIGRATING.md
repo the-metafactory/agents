@@ -50,7 +50,7 @@ Also backup the full bot.yaml and persona file so you have a clean rollback poin
 The manifest captures eight fields per the design (`forge/design/agent-platform.md` lines 159–171):
 
 ```yaml
-schema: pai/v1
+schema: arc/v1
 namespace: metafactory
 type: agent
 name: <name>
@@ -85,11 +85,10 @@ triggers:
   - { type: cli, command: <name> }
 hooks: {}                                       # gated on grove#245 (host-runs-hooks)
 roster: [{ name: ..., role: ... }, ...]
-instanceStateSpec:
-  blueprint: AgentState
+state:
+  blueprint: agent-state
   version: ">=0.2.0"
-instantiation:
-  scope: per-host
+installScope: per-host
 ```
 
 Reference `forge/agent/arc-manifest.yaml` for a full canonical example.
