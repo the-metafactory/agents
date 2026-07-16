@@ -38,10 +38,10 @@ persona:
   file: persona.md
 
 # ─── Blueprints ───────────────────────────────────────────────────────────
-# Echo composes the arc-skill-code-review bundle (the multi-lens review
+# Echo composes the metafactory-skill-code-review bundle (the multi-lens review
 # convention). Other skills come from the broader PAI runtime.
 blueprints:
-  - name: arc-skill-code-review
+  - name: metafactory-skill-code-review
     version: ">=0.1.0"
 
 # ─── Guardrails ───────────────────────────────────────────────────────────
@@ -63,7 +63,7 @@ guardrails:
   readOnlyDirs:
     - ~/Developer/compass                   # SOPs are read-only
   allowedSkills:
-    - code-review                           # Echo's primary skill (per arc-skill-code-review)
+    - code-review                           # Echo's primary skill (per metafactory-skill-code-review)
   # Echo's role is review-only — no Edit/Write/NotebookEdit/Task. Echo posts
   # findings via gh CLI, never directly modifies code.
   disallowedTools:
@@ -92,7 +92,7 @@ triggers:
     surface: discord
     channelPattern: "*"                     # Echo answers review pings anywhere
   - type: cli
-    command: code-review                    # arc-skill-code-review entry
+    command: code-review                    # metafactory-skill-code-review entry
 
 # ─── Lifecycle hooks ──────────────────────────────────────────────────────
 # Future: same AgentState integration story as Luna (gated on grove#245).

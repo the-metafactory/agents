@@ -42,7 +42,7 @@ mentionRole: agent-restricted
 
 # ─── Blueprints (arc bundles to compose) ─────────────────────────────────
 blueprints:
-  - name: arc-skill-code-review
+  - name: metafactory-skill-code-review
     version: ">=0.1.0"
 
 # ─── Guardrails (declarative authority) ──────────────────────────────────
